@@ -1,2 +1,13 @@
-# utils-in-go
-Commonly used wheels
+# sync包
+
+go自带的sync包提供了基本的并发原语，用于处理低级别的内存访问同步。
+
+
+- **WaitGroup** - 等待一组并发操作完成
+- **Mutex** - 互斥锁
+- **RWMutex** - 读写锁
+- **Cond** - 条件锁
+- **Once** - 仅执行一次的Do函数
+- **Pool** - 对象池
+- **Map** - 并发安全的map
+
