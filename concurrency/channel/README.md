@@ -13,6 +13,10 @@
 - **TeeChannel** - 一个将流数据复制多份的channel
 - **BridgeChannel** - 一个处理多个channel的channel
 
+channel操作对应状态图
+
+![channel in Go](https://github.com/WindNotStop/utils-in-go/tree/master/concurrency/channel/channel.png)
+
 
 
 
