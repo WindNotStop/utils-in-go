@@ -13,11 +13,27 @@
 - **TeeChannel** - 一个将流数据复制多份的channel
 - **BridgeChannel** - 一个处理多个channel的channel
 
-channel操作对应状态图
+channel操作对应状态表
 
-![channel in Go](https://github.com/WindNotStop/utils-in-go/tree/master/concurrency/channel/channel.png)
-
-
-
+    | 操作 | channel状态 | 结果 |
+    | --- | --- | --- |
+    | read |   nil   |   阻塞   |
+    |      |   打开且非空   |    输出值  |
+    |      |   打开但空   |   阻塞   |
+    |      |    关闭  |   默认值，false   |
+        
+    | 操作 | channel状态 | 结果 |
+    | --- | --- | --- |
+    | wirte |   nil   |   阻塞   |
+    |      |   打开且不满   |    输入值  |
+    |      |   打开但满   |   阻塞   |
+    |      |    关闭  |   panic   |
+        
+    | 操作 | channel状态 | 结果 |
+    | --- | --- | --- |
+    | close |   nil   |   panic   |
+    |      |   打开且非空   |    关闭  |
+    |      |   打开但空   |   关闭   |
+    |      |    关闭  |   panic   |
 
 
