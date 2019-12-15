@@ -2,17 +2,16 @@ package channel
 
 import "fmt"
 
-func SimpleChannel(){
+func SimpleChannel() {
 	//创建一个带缓冲为1的channel
-	myChan := make(chan interface{}, 1)
+	simple := make(chan interface{}, 1)
 	//写
-	myChan <- 1
+	simple <- 1
 	//读
-	v, ok := <-myChan
-	if ok{
+	v, ok := <-simple
+	if ok {
 		fmt.Println(v)
-	}else{
+	} else {
 		fmt.Println("channel closed")
 	}
 }
-

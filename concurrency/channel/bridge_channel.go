@@ -5,18 +5,18 @@ import (
 	"sync"
 )
 
-func BridgeChannel(){
+func BridgeChannel() {
 	done := make(chan interface{})
 	defer close(done)
 	wg := sync.WaitGroup{}
 	//生成器
-	generator := func(done <-chan interface{},in ...interface{}) <-chan interface{}{
+	generator := func(done <-chan interface{}, in ...interface{}) <-chan interface{} {
 		inStream := make(chan interface{})
 		go func() {
 			defer close(inStream)
-			for _, v := range in{
+			for _, v := range in {
 				select {
-				case inStream <-v:
+				case inStream <- v:
 				case <-done:
 					return
 				}
@@ -25,8 +25,8 @@ func BridgeChannel(){
 		return inStream
 	}
 
-	chan1 := generator(done,1,2,3,4,5)
-	chan2 := generator(done,6,7,8,9,10)
+	chan1 := generator(done, 1, 2, 3, 4, 5)
+	chan2 := generator(done, 6, 7, 8, 9, 10)
 	chanStream := make(chan (<-chan interface{}))
 
 	wg.Add(2)
@@ -36,10 +36,10 @@ func BridgeChannel(){
 		chanStream <- chan2
 	}()
 
-	bridge := func(done <-chan interface{},chanStream <-chan (<-chan interface{})) <-chan interface{}{
+	bridge := func(done <-chan interface{}, chanStream <-chan (<-chan interface{})) <-chan interface{} {
 		results := make(chan interface{})
 		go func() {
-			for{
+			for {
 				var stream <-chan interface{}
 				select {
 				case <-done:
@@ -49,12 +49,12 @@ func BridgeChannel(){
 				//遍历单个channel
 				go func() {
 					defer wg.Done()
-					for v := range stream{
+					for v := range stream {
 						select {
 						case <-done:
 							return
 						default:
-							results <-v
+							results <- v
 						}
 					}
 				}()
@@ -68,9 +68,8 @@ func BridgeChannel(){
 		return results
 	}
 
-	results := bridge(done,chanStream)
-	for v := range results{
+	results := bridge(done, chanStream)
+	for v := range results {
 		fmt.Println(v)
 	}
 }
-

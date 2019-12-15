@@ -5,18 +5,18 @@ import (
 	"time"
 )
 
-func DoneChannel(){
+func DoneChannel() {
 	//用来终止协程
 	done := make(chan interface{})
 	//样例输入
-	in := []interface{}{1,2,3,4,5}
+	in := []interface{}{1, 2, 3, 4, 5}
 	//流处理
 	simpleStream := func(done <-chan interface{}, in ...interface{}) <-chan interface{} {
 		results := make(chan interface{})
 		go func() {
 			defer close(results)
 			defer fmt.Println("goroutine closed")
-			for _, v := range in{
+			for _, v := range in {
 				select {
 				case results <- v:
 					//模拟实际操作
@@ -30,9 +30,9 @@ func DoneChannel(){
 	}
 	//消费(打印)结果数据
 	consumer := func(done chan interface{}, results <-chan interface{}) {
-		for v := range results{
+		for v := range results {
 			//关闭doneChannel
-			if v.(int) == 2{
+			if v.(int) == 2 {
 				close(done)
 			}
 			fmt.Println(v)
