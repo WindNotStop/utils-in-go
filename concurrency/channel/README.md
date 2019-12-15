@@ -9,7 +9,11 @@
 - **OrChannel** - 一个管理多个done的channel
 - **ErrorsChannel** - 一个可传递errors的channel
 - **LimitedPipeline** - 一个限制长度的流处理
-- **fanin** - 
+- **FanIn&Out** - 一种将高耗时的流操作复制多个副本并发的处理
+- **TeeChannel** - 一个将流数据复制多份的channel
+- **BridgeChannel** - 一个处理多个channel的channel
+
+
 
 
 

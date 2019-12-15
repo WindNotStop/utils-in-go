@@ -4,11 +4,15 @@ import "fmt"
 
 func SimpleChannel(){
 	//创建一个带缓冲为1的channel
-	myChan := make(chan int, 1)
+	myChan := make(chan interface{}, 1)
 	//写
 	myChan <- 1
 	//读
-	v := <-myChan
-	fmt.Println(v)
+	v, ok := <-myChan
+	if ok{
+		fmt.Println(v)
+	}else{
+		fmt.Println("channel closed")
+	}
 }
 

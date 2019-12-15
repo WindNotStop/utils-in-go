@@ -21,7 +21,7 @@ func ErrorsChannel(){
 	done := make(chan interface{})
 	defer close(done)
 	//计算逻辑
-	cal := func(done <-chan interface{},ariths []arith) <-chan ResWithErr{
+	cal := func(done <-chan interface{},ariths ...arith) <-chan ResWithErr{
 		results := make(chan ResWithErr)
 		go func() {
 			defer close(results)
@@ -42,7 +42,7 @@ func ErrorsChannel(){
 		}()
 		return results
 	}
-	results := cal(done,ariths)
+	results := cal(done,ariths...)
 	for res := range results{
 		if res.err != nil{
 			fmt.Println(res.err)

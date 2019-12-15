@@ -3,12 +3,13 @@ package channel
 import "fmt"
 
 func LimitedPipeline(){
-	in := []int{1,2,3,4,5}
+	in := []interface{}{1,2,3,4,5}
+	limitedNum := 3
 	done := make(chan interface{})
 	defer close(done)
 	//流生成器,将in切片流化
-	generator := func(done <-chan interface{},in []int) <-chan int{
-		inStream := make(chan int)
+	generator := func(done <-chan interface{},in ...interface{}) <-chan interface{}{
+		inStream := make(chan interface{})
 		go func() {
 			defer close(inStream)
 			for _, v := range in{
@@ -22,11 +23,11 @@ func LimitedPipeline(){
 		return inStream
 	}
 	//num限制流输出量
-	limitedStream := func(done <-chan interface{},inStream <-chan int,num int) <-chan int{
-		results := make(chan int)
+	limitedStream := func(done <-chan interface{},inStream <-chan interface{},limitedNum int) <-chan interface{}{
+		results := make(chan interface{})
 		go func() {
 			defer close(results)
-			for i:=0;i<num;i++{
+			for i:=0;i<limitedNum;i++{
 				select {
 				case results<-<-inStream:
 				case <-done:
@@ -37,8 +38,7 @@ func LimitedPipeline(){
 		return results
 	}
 
-	for v := range limitedStream(done,generator(done,in),3){
+	for v := range limitedStream(done,generator(done,in...),limitedNum){
 		fmt.Println(v)
 	}
 }
-

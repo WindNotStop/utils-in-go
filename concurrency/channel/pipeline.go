@@ -4,25 +4,25 @@ import "fmt"
 
 func Pipeline(){
 	//样例输入
-	in := []int{1,2,3,4,5}
-	//流处理，将样例的值加1
-	simpleStream := func(in []int) <-chan int {
-		results := make(chan int, 5)
+	in := []interface{}{1,2,3,4,5}
+	//流处理
+	simpleStream := func(in ...interface{}) <-chan interface{} {
+		results := make(chan interface{})
 		go func() {
 			defer close(results)
 			for _, v := range in{
-				results <- v + 1
+				results <- v
 			}
 		}()
 		return results
 	}
 	//消费(打印)结果数据
-	consumer := func(results <-chan int) {
+	consumer := func(results <-chan interface{}) {
 		for v := range results{
 			fmt.Println(v)
 		}
 	}
 
-	results := simpleStream(in)
+	results := simpleStream(in...)
 	consumer(results)
 }
