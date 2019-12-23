@@ -1,4 +1,4 @@
-package simple_goroutine_pool
+package large_scale_concurrency
 
 import (
 	"fmt"
