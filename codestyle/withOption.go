@@ -54,7 +54,7 @@ func Send(endpoint string, opt ...option) {
 }
 
 func WithOptionUsage() {
-	Send("192.168.11.1")
-	Send("192.168.11.1", WithTls(true))
-	Send("192.168.11.1", WithLogger(zap.NewExample()))
+	Send("192.168.11.1:8080")
+	Send("192.168.11.1:8080", WithTls(true))
+	Send("192.168.11.1:8080", WithLogger(zap.NewExample()))
 }

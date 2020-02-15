@@ -7,18 +7,18 @@ import (
 
 type IService interface {
 	send(msg string)
-	receive() string
+	recv() string
 }
 
-type service struct {
+type Service struct {
 }
 
-func (s service) send(msg string) {
+func (s Service) send(msg string) {
 	fmt.Println("send:", msg)
 }
 
-func (s service) receive() string {
-	return "received"
+func (s Service) recv() string {
+	return "recv"
 }
 
 type ServiceMiddleware func(IService) IService
@@ -43,10 +43,10 @@ func (s loggingMiddleware) send(msg string) {
 	s.IService.send(msg)
 }
 
-func (s loggingMiddleware) receive() string {
-	s.logger.Info("log receive")
-	defer s.logger.Info("log receive ok")
-	return s.IService.receive()
+func (s loggingMiddleware) recv() string {
+	s.logger.Info("log recv")
+	defer s.logger.Info("log recv ok")
+	return s.IService.recv()
 }
 
 type Metrics int
@@ -70,18 +70,18 @@ func (m metricsMiddleware) send(msg string) {
 	m.IService.send(msg)
 }
 
-func (m metricsMiddleware) receive() string {
+func (m metricsMiddleware) recv() string {
 	fmt.Println("metricCount:", *m.metricCount)
-	return m.IService.receive()
+	return m.IService.recv()
 }
 
 func MiddlewareUsage() {
 	var s IService
-	s = service{}
+	s = Service{}
 	logger := zap.NewExample()
 	s = LoggingMiddleware(logger)(s)
 	metrics := Metrics(0)
 	s = MetricsMiddleware(&metrics)(s)
 	s.send("hello")
-	s.receive()
+	s.recv()
 }
