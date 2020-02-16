@@ -2,11 +2,11 @@ package codestyle
 
 import "fmt"
 
-func search(n int, f func(i int) bool) int {
+func search(n int, callback func(i int) bool) int {
 	l, r := 0, n
 	for l < r {
 		m := int(uint(l+r) >> 1)
-		if f(m) {
+		if callback(m) {
 			r = m
 		} else {
 			l = m + 1
