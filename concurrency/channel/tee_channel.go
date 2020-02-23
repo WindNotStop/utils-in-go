@@ -10,41 +10,50 @@ func TeeChannel() {
 	wg := sync.WaitGroup{}
 	done := make(chan interface{})
 	defer close(done)
-	//返回out1,out2复制副本
-	tee := func(done <-chan interface{}, in ...interface{}) (_, _ <-chan interface{}) {
-		out1 := make(chan interface{})
-		out2 := make(chan interface{})
+	//返回out1,out2...outn复制副本
+	tee := func(done <-chan interface{}, n int, in ...interface{}) []chan interface{} {
+		outs := make([]chan interface{}, n)
+		for i, _ := range outs {
+			outs[i] = make(chan interface{})
+		}
 		go func() {
-			defer close(out1)
-			defer close(out2)
+			defer func() {
+				for _, v := range outs {
+					close(v)
+				}
+			}()
 			for _, val := range in {
-				var out1, out2 = out1, out2
 				//如果去掉for循环就变成了fan out模式的生成器
-				for i := 0; i < 2; i++ {
+				for i := 0; i < n; i++ {
 					select {
 					case <-done:
+						return
 					//nil用来阻塞已经复制完成的channel
-					case out1 <- val:
-						out1 = nil
-					case out2 <- val:
-						out2 = nil
+					case outs[i] <- val:
 					}
 				}
 			}
 		}()
-		return out1, out2
+		return outs
 	}
-	res1, res2 := tee(done, in...)
-	wg.Add(2)
+	res := tee(done, 3, in...)
+	wg.Add(3)
+
 	go func() {
 		defer wg.Done()
-		for v := range res1 {
+		for v := range res[0] {
 			fmt.Println(v)
 		}
 	}()
 	go func() {
 		defer wg.Done()
-		for v := range res2 {
+		for v := range res[1] {
+			fmt.Println(v)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		for v := range res[2] {
 			fmt.Println(v)
 		}
 	}()
