@@ -1,43 +1,52 @@
 package codestyle
 
-import (
-	"fmt"
-	"time"
-)
+import "fmt"
 
 type Attacker interface {
+	prepare()
 	attacking()
+	cleanup()
 }
 
-type List []string
-
-type Strategy func(t *Target)
-
-type Target struct {
-	l []string
-	n time.Time
-	Strategy
+type Scheduler struct {
 }
 
-func (t *Target) attacking(){
-	t.Strategy(t)
+func (p *Scheduler) prepare() {
+	fmt.Println("prepare")
 }
 
-func (s Strategy) Start(l List){
-	t := &Target{
-		l:        l,
-		n:        time.Now(),
-		Strategy: s,
-	}
-	t.attacking()
+func (p *Scheduler) attacking() {
+	fmt.Println("attacking")
+}
+
+func (p *Scheduler) cleanup() {
+	fmt.Println("cleanup")
+}
+
+type Strategy func(Attacker)
+
+func (s Strategy) Start(a Attacker) {
+	s(a)
 }
 
 func StrategyUsage() {
-	s0 := func(t *Target) {fmt.Printf("%v will attack at %v\n", t.l[0],t.n)}
-	s1 := func(t *Target) {fmt.Printf("%v will attack at %v\n", t.l[2],t.n.Add(time.Hour))}
-	s2 := func(t *Target) {fmt.Printf("%v will attack at %v\n", t.l[1],t.n.AddDate(0,0,1))}
-	l := List{"iron-man","spider-man","black-widow"}
-	Strategy(s0).Start(l)
-	Strategy(s1).Start(l)
-	Strategy(s2).Start(l)
+	p := &Scheduler{}
+	s0 := func(a Attacker) {
+		a.attacking()
+		a.prepare()
+		a.cleanup()
+	}
+	s1 := func(a Attacker) {
+		a.prepare()
+		a.attacking()
+		a.cleanup()
+	}
+	s2 := func(a Attacker) {
+		a.attacking()
+		a.cleanup()
+		a.prepare()
+	}
+	Strategy(s0).Start(p)
+	Strategy(s1).Start(p)
+	Strategy(s2).Start(p)
 }

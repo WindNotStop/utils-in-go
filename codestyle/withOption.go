@@ -16,24 +16,25 @@ type options struct {
 
 type tlsOption bool
 
-func (t tlsOption) apply(opt *options) {
-	opt.tls = bool(t)
+func (t *tlsOption) apply(opt *options) {
+	opt.tls = bool(*t)
 }
 
 func WithTls(t bool) option {
-	return tlsOption(t)
+	tt := tlsOption(t)
+	return &tt
 }
 
 type loggerOption struct {
 	Log *zap.Logger
 }
 
-func (l loggerOption) apply(opt *options) {
+func (l *loggerOption) apply(opt *options) {
 	opt.logger = l.Log
 }
 
 func WithLogger(log *zap.Logger) option {
-	return loggerOption{Log: log}
+	return &loggerOption{Log: log}
 }
 
 func Send(endpoint string, opt ...option) {
