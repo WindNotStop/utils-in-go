@@ -12,11 +12,12 @@ const (
 
 type job struct {
 	id int
+	f  func()
 }
 
 func doWork(j job) {
 	//模拟任务执行
-	fmt.Println(j.id)
+	j.f()
 	//监控协程数
 	fmt.Println("goroutine num:", runtime.NumGoroutine())
 }
@@ -53,7 +54,9 @@ func SimpleGoroutinePool() {
 	//模拟任务输入
 	go func() {
 		for i := 0; i < 1000; i++ {
-			jobChan <- job{i}
+			jobChan <- job{i, func() {
+				fmt.Printf("执行第%v个任务", i)
+			}}
 		}
 		close(done)
 	}()

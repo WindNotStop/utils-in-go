@@ -1,7 +1,9 @@
 package main
 
-import "github.com/WindNotStop/utils-in-go/codestyle"
+import (
+	"github.com/WindNotStop/utils-in-go/concurrency/large_scale_concurrency"
+)
 
 func main() {
-	codestyle.WithOptionUsage()
+	large_scale_concurrency.SimpleGoroutinePool()
 }

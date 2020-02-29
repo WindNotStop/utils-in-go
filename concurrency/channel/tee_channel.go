@@ -28,7 +28,6 @@ func TeeChannel() {
 					select {
 					case <-done:
 						return
-					//nil用来阻塞已经复制完成的channel
 					case outs[i] <- val:
 					}
 				}
