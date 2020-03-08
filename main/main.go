@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	large_scale_concurrency.SimpleGoroutinePool()
+	large_scale_concurrency.SlicePool()
 }

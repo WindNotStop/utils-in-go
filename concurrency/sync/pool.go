@@ -1,31 +1,23 @@
 package sync
 
 import (
-	"fmt"
 	"sync"
 )
 
-//模拟连接资源
-type conn struct {
-	ip   string
-	port int
-}
-
 func Pool() {
-	pool := sync.Pool{
+	//池中存放可复用的切片
+	slicePool := &sync.Pool{
 		New: func() interface{} {
-			fmt.Println("create a conn")
-			return conn{
-				ip:   "localhost",
-				port: 5672,
-			}
+			v := make([]interface{}, 0, 100)
+			return v
 		},
 	}
-	//获取一个实例，没有就new一个
-	conn := pool.Get()
-	fmt.Println("conn1:", conn)
-	//将实例放回池中
-	pool.Put(conn)
-	conn = pool.Get()
-	fmt.Println("conn2:", conn)
+	//获取一个实例
+	slice := slicePool.Get().([]interface{})
+	//对实例进行操作
+	slice = append(slice, 1, 2, 3)
+	//清空切片
+	slice = slice[:0]
+	//放回实例
+	slicePool.Put(slice)
 }
