@@ -19,9 +19,8 @@ func Map() {
 	}
 	//遍历
 	myMap.Range(func(key, value interface{}) bool {
-		v, ok := myMap.Load(key)
-		fmt.Println(v)
-		return ok
+		fmt.Println(key," ",value)
+		return true
 	})
 	//删除
 	myMap.Delete(10)
