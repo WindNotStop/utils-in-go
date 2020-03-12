@@ -7,21 +7,21 @@ import (
 	"sync"
 )
 
-type Bloom struct {
+type Filter struct {
 	m     *sync.Map
 	seeds []maphash.Seed
 }
 
-func NewBloom(n int) *Bloom {
+func NewFilter(n int) *Filter {
 	m := &sync.Map{}
 	seeds := make([]maphash.Seed, n)
 	for i := 0; i < n; i++ {
 		seeds[i] = maphash.MakeSeed()
 	}
-	return &Bloom{m: m, seeds: seeds}
+	return &Filter{m: m, seeds: seeds}
 }
 
-func (b *Bloom) Add(input string) {
+func (b *Filter) Add(input string) {
 	for i := 0; i < len(b.seeds); i++ {
 		hash := &maphash.Hash{}
 		hash.SetSeed(b.seeds[i])
@@ -34,7 +34,7 @@ func (b *Bloom) Add(input string) {
 	}
 }
 
-func (b *Bloom) IsExist(input string) bool {
+func (b *Filter) IsExist(input string) bool {
 	ok := true
 	for i := 0; i < len(b.seeds); i++ {
 		hash := &maphash.Hash{}
@@ -48,7 +48,7 @@ func (b *Bloom) IsExist(input string) bool {
 	return ok
 }
 
-func (b *Bloom) Remove(input string) {
+func (b *Filter) Remove(input string) {
 	for i := 0; i < len(b.seeds); i++ {
 		hash := &maphash.Hash{}
 		hash.SetSeed(b.seeds[i])
@@ -62,7 +62,7 @@ func (b *Bloom) Remove(input string) {
 	}
 }
 
-func (b *Bloom) String() string {
+func (b *Filter) String() string {
 	sb := &strings.Builder{}
 	b.m.Range(func(key, value interface{}) bool {
 		sb.WriteString("key:")
