@@ -1,6 +1,7 @@
 package large_scale_concurrency
 
 import (
+	"errors"
 	"hash/maphash"
 	"strconv"
 	"strings"
@@ -21,45 +22,62 @@ func NewFilter(n int) *Filter {
 	return &Filter{m: m, seeds: seeds}
 }
 
-func (b *Filter) Add(input string) {
+func (b *Filter) Add(input string) error {
 	for i := 0; i < len(b.seeds); i++ {
 		hash := &maphash.Hash{}
 		hash.SetSeed(b.seeds[i])
-		hash.WriteString(input)
+		_, err := hash.WriteString(input)
+		if err != nil {
+			return err
+		}
 		key := hash.Sum64()
 		value, loaded := b.m.LoadOrStore(key, 1)
 		if loaded {
 			b.m.Store(key, value.(int)+1)
 		}
 	}
+	return nil
 }
 
-func (b *Filter) IsExist(input string) bool {
+func (b *Filter) IsExist(input string) (bool, error) {
 	ok := true
 	for i := 0; i < len(b.seeds); i++ {
 		hash := &maphash.Hash{}
 		hash.SetSeed(b.seeds[i])
-		hash.WriteString(input)
+		_, err := hash.WriteString(input)
+		if err != nil {
+			return false, err
+		}
 		key := hash.Sum64()
-		if _, existed := b.m.Load(key); !existed {
+		if v, existed := b.m.Load(key); !existed {
 			ok = false
+			if v == 0 {
+				b.m.Delete(key)
+			}
 		}
 	}
-	return ok
+	return ok, nil
 }
 
-func (b *Filter) Remove(input string) {
+func (b *Filter) Remove(input string) error {
 	for i := 0; i < len(b.seeds); i++ {
 		hash := &maphash.Hash{}
 		hash.SetSeed(b.seeds[i])
-		hash.WriteString(input)
+		_, err := hash.WriteString(input)
+		if err != nil {
+			return err
+		}
 		key := hash.Sum64()
-		value, _ := b.m.Load(key)
+		value, ok := b.m.Load(key)
+		if !ok {
+			return errors.New("not existed")
+		}
 		b.m.Store(key, value.(int)-1)
 		if value == 1 {
 			b.m.Delete(key)
 		}
 	}
+	return nil
 }
 
 func (b *Filter) String() string {
