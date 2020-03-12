@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="091f6cdb-0f9b-40d7-b232-de22dc852b86" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/concurrency/large_scale_concurrency/bloom.go" beforeDir="false" afterPath="$PROJECT_DIR$/concurrency/large_scale_concurrency/bloom.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_bloom.go" beforeDir="false" afterPath="$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_bloom.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -56,10 +56,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/filter.go">
+        <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_filter.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="41" selection-start-line="41" selection-end-line="58" selection-end-column="1" />
+            <state relative-caret-position="192">
+              <caret line="72" column="9" lean-forward="true" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
               <folding>
                 <element signature="e#33#89#0" expanded="true" />
               </folding>
@@ -68,10 +68,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/bloom.go">
+        <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_bloom.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+            <state relative-caret-position="534">
+              <caret line="52" column="24" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="24" />
               <folding>
                 <element signature="e#33#67#0" expanded="true" />
               </folding>
@@ -82,8 +82,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_goroutine_pool.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="30" column="27" lean-forward="true" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
+            <state relative-caret-position="190">
+              <caret line="29" column="19" lean-forward="true" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -102,7 +102,7 @@
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="133">
-                <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
+                <caret line="7" column="30" lean-forward="true" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
               </first_editor>
               <second_editor />
             </state>
@@ -162,8 +162,9 @@
         <option value="$PROJECT_DIR$/concurrency/sync/map.go" />
         <option value="$PROJECT_DIR$/concurrency/large_scale_concurrency/fiter.go" />
         <option value="$PROJECT_DIR$/concurrency/large_scale_concurrency/filter.go" />
-        <option value="$PROJECT_DIR$/concurrency/large_scale_concurrency/README.md" />
         <option value="$PROJECT_DIR$/concurrency/large_scale_concurrency/bloom.go" />
+        <option value="$PROJECT_DIR$/concurrency/large_scale_concurrency/README.md" />
+        <option value="$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_bloom.go" />
       </list>
     </option>
   </component>
@@ -195,6 +196,12 @@
               <item name="utils-in-go" type="b2602c69:ProjectViewProjectNode" />
               <item name="utils-in-go" type="462c0819:PsiDirectoryNode" />
               <item name="concurrency" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="utils-in-go" type="b2602c69:ProjectViewProjectNode" />
+              <item name="utils-in-go" type="462c0819:PsiDirectoryNode" />
+              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
+              <item name="channel" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="utils-in-go" type="b2602c69:ProjectViewProjectNode" />
@@ -600,42 +607,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/filter.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="41" selection-start-line="41" selection-end-line="58" selection-end-column="1" />
-          <folding>
-            <element signature="e#33#89#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/concurrency/channel/done_channel.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-321" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_goroutine_pool.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="30" column="27" lean-forward="true" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="133">
-            <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
+            <caret line="7" column="30" lean-forward="true" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/bloom.go">
+    <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_goroutine_pool.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+        <state relative-caret-position="190">
+          <caret line="29" column="19" lean-forward="true" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_filter.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="72" column="9" lean-forward="true" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+          <folding>
+            <element signature="e#33#89#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/concurrency/large_scale_concurrency/simple_bloom.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="534">
+          <caret line="52" column="24" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="24" />
           <folding>
             <element signature="e#33#67#0" expanded="true" />
           </folding>

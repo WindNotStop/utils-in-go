@@ -31,8 +31,8 @@ func (b *Bloom) Add(input string) error {
 			return err
 		}
 		key := hash.Sum64()
-		index := key >> 35
-		pos := key & 0x07
+		index := key >> 32
+		pos := key>>29 & 0x07
 		b.locker.Lock()
 		b.bits[index] |= 1 << pos
 		b.locker.Unlock()
@@ -49,8 +49,8 @@ func (b *Bloom) IsExist(input string) (bool, error) {
 			return false, err
 		}
 		key := hash.Sum64()
-		index := key >> 35
-		pos := key & 0x07
+		index := key >> 32
+		pos := key>>29 & 0x07
 		b.locker.RLock()
 		existed := b.bits[index]&(1<<pos) != 0
 		b.locker.RUnlock()
