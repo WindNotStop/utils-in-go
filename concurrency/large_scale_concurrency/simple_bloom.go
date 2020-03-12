@@ -7,19 +7,19 @@ import (
 )
 
 type Bloom struct {
-	bits     []byte
-	seeds []maphash.Seed
+	bits   []byte
+	seeds  []maphash.Seed
 	locker *sync.RWMutex
 }
 
 func NewBloom(n int) *Bloom {
-	bits := make([]byte,math.MaxUint32)
+	bits := make([]byte, math.MaxUint32)
 	seeds := make([]maphash.Seed, n)
 	locker := &sync.RWMutex{}
 	for i := 0; i < n; i++ {
 		seeds[i] = maphash.MakeSeed()
 	}
-	return &Bloom{bits: bits, seeds: seeds, locker:locker}
+	return &Bloom{bits: bits, seeds: seeds, locker: locker}
 }
 
 func (b *Bloom) Add(input string) error {
@@ -58,5 +58,3 @@ func (b *Bloom) IsExist(input string) (bool, error) {
 	}
 	return true, nil
 }
-
-
