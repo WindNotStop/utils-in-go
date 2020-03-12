@@ -22,67 +22,67 @@ func NewFilter(n int) *Filter {
 	return &Filter{m: m, seeds: seeds}
 }
 
-func (b *Filter) Add(input string) error {
-	for i := 0; i < len(b.seeds); i++ {
+func (f *Filter) Add(input string) error {
+	for i := 0; i < len(f.seeds); i++ {
 		hash := &maphash.Hash{}
-		hash.SetSeed(b.seeds[i])
+		hash.SetSeed(f.seeds[i])
 		_, err := hash.WriteString(input)
 		if err != nil {
 			return err
 		}
 		key := hash.Sum64()
-		value, loaded := b.m.LoadOrStore(key, 1)
+		value, loaded := f.m.LoadOrStore(key, 1)
 		if loaded {
-			b.m.Store(key, value.(int)+1)
+			f.m.Store(key, value.(int)+1)
 		}
 	}
 	return nil
 }
 
-func (b *Filter) IsExist(input string) (bool, error) {
-	ok := true
-	for i := 0; i < len(b.seeds); i++ {
+func (f *Filter) IsExist(input string) (bool, error) {
+	for i := 0; i < len(f.seeds); i++ {
 		hash := &maphash.Hash{}
-		hash.SetSeed(b.seeds[i])
+		hash.SetSeed(f.seeds[i])
 		_, err := hash.WriteString(input)
 		if err != nil {
 			return false, err
 		}
 		key := hash.Sum64()
-		if v, existed := b.m.Load(key); !existed {
-			ok = false
+		if v, existed := f.m.Load(key); !existed {
 			if v == 0 {
-				b.m.Delete(key)
+				f.m.Delete(key)
 			}
+			return false, nil
 		}
 	}
-	return ok, nil
+	return true, nil
 }
 
-func (b *Filter) Remove(input string) error {
-	for i := 0; i < len(b.seeds); i++ {
+func (f *Filter) Remove(input string) error {
+	for i := 0; i < len(f.seeds); i++ {
 		hash := &maphash.Hash{}
-		hash.SetSeed(b.seeds[i])
+		hash.SetSeed(f.seeds[i])
 		_, err := hash.WriteString(input)
 		if err != nil {
 			return err
 		}
 		key := hash.Sum64()
-		value, ok := b.m.Load(key)
+		value, ok := f.m.Load(key)
 		if !ok {
 			return errors.New("not existed")
 		}
-		b.m.Store(key, value.(int)-1)
 		if value == 1 {
-			b.m.Delete(key)
+			f.m.Delete(key)
+		}else {
+			f.m.Store(key, value.(int)-1)
 		}
 	}
 	return nil
 }
 
-func (b *Filter) String() string {
+func (f *Filter) String() string {
 	sb := &strings.Builder{}
-	b.m.Range(func(key, value interface{}) bool {
+	f.m.Range(func(key, value interface{}) bool {
 		sb.WriteString("key:")
 		sb.WriteString(strconv.FormatUint(key.(uint64), 10))
 		sb.WriteString(" , ")
