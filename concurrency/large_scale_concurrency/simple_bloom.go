@@ -12,15 +12,14 @@ type Bloom struct {
 	locker *sync.RWMutex
 }
 
-//1024大小的bloom的size输入为10，n为hash函数数量
 func NewBloom(size uint, n int) *Bloom {
-	bits := make([]byte, 1<<size-3)
+	bits := make([]byte, size)
 	seeds := make([]maphash.Seed, n)
 	locker := &sync.RWMutex{}
 	for i := 0; i < n; i++ {
 		seeds[i] = maphash.MakeSeed()
 	}
-	return &Bloom{size: size - 3, bits: bits, seeds: seeds, locker: locker}
+	return &Bloom{size: size, bits: bits, seeds: seeds, locker: locker}
 }
 
 func (b *Bloom) Add(input string) error {
@@ -32,8 +31,8 @@ func (b *Bloom) Add(input string) error {
 			return err
 		}
 		key := hash.Sum64()
-		index := key >> uint(61-b.size)
-		pos := key >> uint(64-b.size) & 0x07
+		index := key % uint64(b.size) >> 3
+		pos := index & 0x07
 		b.locker.Lock()
 		b.bits[index] |= 1 << pos
 		b.locker.Unlock()
@@ -50,8 +49,8 @@ func (b *Bloom) IsExist(input string) (bool, error) {
 			return false, err
 		}
 		key := hash.Sum64()
-		index := key >> uint(61-b.size)
-		pos := key >> uint(64-b.size) & 0x07
+		index := key % uint64(b.size) >> 3
+		pos := index & 0x07
 		b.locker.RLock()
 		existed := b.bits[index]&(1<<pos) != 0
 		b.locker.RUnlock()
