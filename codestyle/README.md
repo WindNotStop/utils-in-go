@@ -1,6 +1,6 @@
 # codestyle
 
-常用代码设计规范
+常用代码设计参考
 
 - **withOption** 
 ```go
