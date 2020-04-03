@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/WindNotStop/utils-in-go/concurrency/large_scale_concurrency"
+	"github.com/WindNotStop/utils-in-go/concurrency/high_concurrency_component"
 )
 
 func main() {
-	large_scale_concurrency.SlicePool()
+	high_concurrency_component.SlicePool()
 }

@@ -1,4 +1,4 @@
-package large_scale_concurrency
+package high_concurrency_component
 
 import (
 	"bytes"

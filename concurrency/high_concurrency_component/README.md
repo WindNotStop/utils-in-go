@@ -1,6 +1,6 @@
-# large_scale_concurrency
+# high_concurrency_component
 
-大规模并发
+高并发组件
 
 - **simple_goroutine_pool** - 一个简单的协程池
 - **string_[]byte** - string与[]byte快速转换
