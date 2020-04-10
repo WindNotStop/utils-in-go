@@ -32,6 +32,7 @@ type slot struct {
 }
 
 type entity struct {
+	time  byte
 	key   []byte
 	value []byte
 }
@@ -51,55 +52,65 @@ func (c *Cache) Init() {
 				index := j*rds + k
 				c.segments[i].rb[index].key = make([]byte, 0, keyLen)
 				c.segments[i].rb[index].value = make([]byte, 0, valueLen)
+				c.segments[i].rb[index].time = 0
 			}
 		}
 	}
 }
 
-func (c *Cache) put(key []byte, value []byte) {
-	segmentId, slotId, slotIndex, rbIndex := c.getId(key)
-	slotIndex = (slotIndex + 1) % rds
-	rbIndex = rbIndex + slotIndex
+func (c *Cache) Put(key []byte, value []byte) {
+	segmentId, slotId := c.getId(key)
 	c.locks[segmentId].Lock()
-	c.segments[segmentId].slots[slotId].point = slotIndex
-	c.segments[segmentId].rb[rbIndex].key = c.segments[segmentId].rb[rbIndex].key[:0]
-	c.segments[segmentId].rb[rbIndex].value = c.segments[segmentId].rb[rbIndex].value[:0]
-	c.segments[segmentId].rb[rbIndex].key = append(c.segments[segmentId].rb[rbIndex].key, key...)
-	c.segments[segmentId].rb[rbIndex].value = append(c.segments[segmentId].rb[rbIndex].value, value...)
+	slotIndex := c.segments[segmentId].slots[slotId].point
+	rbIndex := int(slotId) * rds
+Loop:
+	for {
+		for i := 1; i <= rds; i++ {
+			index := (slotIndex+i+rds)%rds + rbIndex
+			if c.segments[segmentId].rb[index].time <= 0 {
+				c.segments[segmentId].slots[slotId].point = index - rbIndex
+				c.segments[segmentId].rb[index].key = c.segments[segmentId].rb[index].key[:0]
+				c.segments[segmentId].rb[index].value = c.segments[segmentId].rb[index].value[:0]
+				c.segments[segmentId].rb[index].key = append(c.segments[segmentId].rb[index].key, key...)
+				c.segments[segmentId].rb[index].value = append(c.segments[segmentId].rb[index].value, value...)
+				c.segments[segmentId].rb[index].time = 99
+				break Loop
+			} else {
+				c.segments[segmentId].rb[index].time--
+			}
+		}
+	}
 	c.locks[segmentId].Unlock()
 }
 
-func (c *Cache) get(key []byte) []byte {
-	segmentId, slotId, slotIndex, rbIndex := c.getId(key)
+func (c *Cache) Get(key []byte) []byte {
+	segmentId, slotId := c.getId(key)
 	c.locks[segmentId].Lock()
+	slotIndex := c.segments[segmentId].slots[slotId].point
+	rbIndex := int(slotId) * rds
 	var value []byte
 	for i := 0; i < rds; i++ {
-		index := (slotIndex - i + rds) % rds
-		if bytes.Equal(c.segments[segmentId].rb[rbIndex+index].key, key) {
-			value = c.segments[segmentId].rb[rbIndex+index].value
-			slotIndex = (slotIndex + 1) % rds
-			rbIndex = rbIndex + slotIndex
-			c.segments[segmentId].slots[slotId].point = slotIndex
-			c.segments[segmentId].rb[rbIndex].key = c.segments[segmentId].rb[rbIndex].key[:0]
-			c.segments[segmentId].rb[rbIndex].value = c.segments[segmentId].rb[rbIndex].value[:0]
-			c.segments[segmentId].rb[rbIndex].key = append(c.segments[segmentId].rb[rbIndex].key, key...)
-			c.segments[segmentId].rb[rbIndex].value = append(c.segments[segmentId].rb[rbIndex].value, value...)
+		index := (slotIndex+i+rds)%rds + rbIndex
+		if bytes.Equal(c.segments[segmentId].rb[index].key, key) {
+			value = c.segments[segmentId].rb[index].value
+			if c.segments[segmentId].rb[index].time < 100 {
+				c.segments[segmentId].rb[index].time += 9
+			}
 			break
+		} else {
+			c.segments[segmentId].rb[index].time--
 		}
 	}
 	c.locks[segmentId].Unlock()
 	return value
 }
 
-func (c *Cache) getId(key []byte) (uint64, uint64, int, int) {
+func (c *Cache) getId(key []byte) (uint64, uint64) {
 	hash := &maphash.Hash{}
 	hash.SetSeed(c.seed)
 	hash.Write(key)
 	keyHash := hash.Sum64()
 	segmentId := keyHash % segmentSize
 	slotId := keyHash / segmentSize % slotSize
-	slotIndex := c.segments[segmentId].slots[slotId].point
-	rbIndex := int(slotId) * rds
-	return segmentId, slotId, slotIndex, rbIndex
+	return segmentId, slotId
 }
-
